@@ -9,11 +9,11 @@ import {
     getSellingProductsError,
     getHotProductsSuccess,
     getHotProductsError,
-    getProductDetailSuccess,
-    getProductDetailError,
+    postOrderSuccess,
+    postOrderError,
 } from "../actions/product";
 
-import {GET_PRODUCTS, GET_SELLING_PRODUCTS, GET_HOT_PRODUCTS } from "../contants/product";
+import {GET_PRODUCTS, GET_SELLING_PRODUCTS, GET_HOT_PRODUCTS, POST_ORDER } from "../contants/product";
 
 export function* getProducts(action) {
     const url = `api/products/get?active=1&id_website=4&id_cat=${action.offset?.id_cart ? action.offset?.id_cart:''}&id_filter=${action.offset?.id_filter ? action.offset?.id_filter :''}`;
@@ -25,7 +25,25 @@ export function* getProducts(action) {
     }
 }
 
+export function* postOrder(payload) {
+    const url = `api/orders/add-from-react?id_website=4`;
+    try {
+        const response = yield call(Request, url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json, text-plain, */*",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(payload.payload),
+        });
+        yield put(postOrderSuccess(response));
+    } catch (error) {
+        yield put(postOrderError(error.message));
+    }
 
+}
 
 export function* getSellingProducts(action) {
     const url = `api/products/get?active=1&id_website=4&feature=1`;
@@ -46,15 +64,6 @@ export function* getHotProducts(action) {
         yield put(getHotProductsError(error.message));
     }
 }
-// export function* getDetail(action) {
-//     const url = `products/detail?alias=${action.alias}`;
-//     try {
-//         const response = yield call(Request, url);
-//         yield put(getProductDetailSuccess(response.data));
-//     } catch (error) {
-//         yield put(getProductDetailError(error.message));
-//     }
-// }
 
 export default function* ProductSaga() {
     yield all([
@@ -62,5 +71,6 @@ export default function* ProductSaga() {
         yield takeLatest(GET_SELLING_PRODUCTS, getSellingProducts),
         yield takeLatest(GET_HOT_PRODUCTS, getHotProducts),
         // yield takeLatest(GET_DETAIL, getDetail),
+        yield takeLatest(POST_ORDER, postOrder),
     ]);
 }

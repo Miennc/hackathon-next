@@ -15,6 +15,24 @@ export const getProductsError = (errMess) => ({
   errMess,
 });
 
+
+export const postOrder = (payload) => ({
+  type: TYPE.POST_ORDER,
+  payload,
+});
+export const postOrderSuccess = (data, total) => ({
+  type: TYPE.POST_ORDER_SUCCESS,
+  data: data,
+  total: total,
+});
+export const postOrderError = (errMess) => ({
+  type: TYPE.POST_ORDER_ERROR,
+  errMess,
+});
+
+
+
+
 //Selling===============================================================
 
 export const getSellingProducts = (offset, page) => ({
@@ -49,15 +67,3 @@ export const getHotProductsError = (errMess) => ({
   errMess,
 });
 
-// export const getProductDetail = (alias) => ({
-//   type: TYPE.GET_DETAIL,
-//   alias: alias,
-// });
-// export const getProductDetailSuccess = (data) => ({
-//   type: TYPE.GET_DETAIL_SUCCESS,
-//   data: data,
-// });
-// export const getProductDetailError = (errMess) => ({
-//   type: TYPE.GET_DETAIL_ERROR,
-//   errMess,
-// });

@@ -1,6 +1,39 @@
 import React from 'react';
-
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { number } from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { postOrder } from '../../actions/product'
 function Index(props) {
+    const [cart, setCart] = useState([]);
+    const [newCart, setNewCart] = useState([]);
+    const [subTotal, setSubTotal] = useState(0);
+    const [discount, setDiscount] = useState(10000)
+    const [ship, setShip] = useState(0)
+    const [total, setTotal] = useState(0)
+    useEffect(() => {
+        setCart(JSON.parse(localStorage.getItem("carts")));
+    }, []);
+
+    useEffect(() => {
+        setSubTotal(cart.reduce((total, item) => total + item.price, 0));
+        setTotal(cart.reduce((total, item) => total + item.price, 0) - discount + ship);
+    }, [cart]);
+    const dispatch = useDispatch();
+    const handOrder = () => {
+
+        dispatch(postOrder({
+            elivery_address: "việt văn nam",
+            delivery_phone: "0000000",
+            delivery_name: "Sinh phèn chúa",
+            note: "aaaaa",
+            ship_fee: "10000",
+            item_price: total,
+            tax: "10000",
+            items: cart,
+            id_website: 4,
+        }))
+    }
     return (
         <div>
 
@@ -15,48 +48,37 @@ function Index(props) {
                     <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
                         <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
                             <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">Customer’s Cart</p>
-                            <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                                <div className="pb-4 md:pb-8 w-full md:w-40">
-                                    <img className="w-full hidden md:block" src="https://i.ibb.co/84qQR4p/Rectangle-10.png" alt="dress" />
-                                    <img className="w-full md:hidden" src="https://i.ibb.co/L039qbN/Rectangle-10.png" alt="dress" />
-                                </div>
-                                <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                                    <div className="w-full flex flex-col justify-start items-start space-y-8">
-                                        <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Premium Quaility Dress</h3>
-                                        <div className="flex justify-start items-start flex-col space-y-2">
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Style: </span> Italic Minimal Design</p>
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Size: </span> Small</p>
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Color: </span> Light Blue</p>
+
+
+                            {
+                                cart?.map((itemCart, cartIndex) => {
+                                    return (
+                                        <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
+                                            <div className="pb-4 md:pb-8 w-full md:w-40">
+                                                <img src={itemCart?.thumb ? `http://192.168.1.28/storage/` + itemCart?.thumb[0] : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT65CXLkEWFDlHIHnU1hDnHHVn0GdfzBR7Ejg&usqp=CAU"} className="w-52  rounded" alt="Thumbnail" />
+
+                                            </div>
+                                            <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
+                                                <div className="w-full flex flex-col justify-start items-start space-y-8">
+                                                    <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">{itemCart.name}</h3>
+                                                    <div className="flex justify-start items-start flex-col space-y-2">
+                                                        <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Style: </span> Italic Minimal Design</p>
+                                                        <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Size: </span> Small</p>
+                                                        <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Color: </span> Light Blue</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-between space-x-8 items-start w-full">
+                                                    <p className="text-base dark:text-white xl:text-lg leading-6">${itemCart.price} <span className="text-red-300 line-through"> ${itemCart.old_price}</span></p>
+                                                    <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">{itemCart.quantity}</p>
+                                                    <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">${itemCart.price * itemCart.quantity}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex justify-between space-x-8 items-start w-full">
-                                        <p className="text-base dark:text-white xl:text-lg leading-6">$36.00 <span className="text-red-300 line-through"> $45.00</span></p>
-                                        <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">01</p>
-                                        <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">$36.00</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-6 md:mt-0 flex justify-start flex-col md:flex-row items-start md:items-center space-y-4 md:space-x-6 xl:space-x-8 w-full">
-                                <div className="w-full md:w-40">
-                                    <img className="w-full hidden md:block" src="https://i.ibb.co/s6snNx0/Rectangle-17.png" alt="dress" />
-                                    <img className="w-full md:hidden" src="https://i.ibb.co/BwYWJbJ/Rectangle-10.png" alt="dress" />
-                                </div>
-                                <div className="flex justify-between items-start w-full flex-col md:flex-row space-y-4 md:space-y-0">
-                                    <div className="w-full flex flex-col justify-start items-start space-y-8">
-                                        <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">High Quaility Italic Dress</h3>
-                                        <div className="flex justify-start items-start flex-col space-y-2">
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Style: </span> Italic Minimal Design</p>
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Size: </span> Small</p>
-                                            <p className="text-sm dark:text-white leading-none text-gray-800"><span className="dark:text-gray-400 text-gray-300">Color: </span> Light Blue</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between space-x-8 items-start w-full">
-                                        <p className="text-base dark:text-white xl:text-lg leading-6">$20.00 <span className="text-red-300 line-through"> $30.00</span></p>
-                                        <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">01</p>
-                                        <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">$20.00</p>
-                                    </div>
-                                </div>
-                            </div>
+                                    )
+                                })
+                            }
+
+
                         </div>
                         <div className="flex justify-center flex-col md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                             <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
@@ -64,20 +86,20 @@ function Index(props) {
                                 <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                                     <div className="flex justify-between w-full">
                                         <p className="text-base dark:text-white leading-4 text-gray-800">Subtotal</p>
-                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">$56.00</p>
+                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">${subTotal}</p>
                                     </div>
                                     <div className="flex justify-between items-center w-full">
                                         <p className="text-base dark:text-white leading-4 text-gray-800">Discount <span className="bg-gray-200 p-1 text-xs font-medium dark:bg-white dark:text-gray-800 leading-3 text-gray-800">STUDENT</span></p>
-                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">-$28.00 (50%)</p>
+                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">-${discount} </p>
                                     </div>
                                     <div className="flex justify-between items-center w-full">
                                         <p className="text-base dark:text-white leading-4 text-gray-800">Shipping</p>
-                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">$8.00</p>
+                                        <p className="text-base dark:text-gray-300 leading-4 text-gray-600">$0 free</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center w-full">
                                     <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">Total</p>
-                                    <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">$36.00</p>
+                                    <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">${parseInt(total)}</p>
                                 </div>
                             </div>
                             <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
@@ -130,7 +152,7 @@ function Index(props) {
                                     </div>
                                 </div>
                                 <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                                    <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">Edit Details</button>
+                                    <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800" onClick={() => handOrder()}>ORDER</button>
                                 </div>
                             </div>
                         </div>

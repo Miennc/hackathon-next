@@ -6,12 +6,15 @@ import {getProductDetail} from '../../actions/product';
 const Index = () => {
     const router = useRouter()
     const dispatch = useDispatch();
-    const productDetail = useSelector(state => state.product.productDetail);
+    useEffect(() => {
+      console.log('rrrrrr',router.query.alias);
+    }, []);
     return (
         <div>
       <section class="text-gray-700 body-font overflow-hidden bg-white">
         <div class="container px-5 py-24 mx-auto">
           <div class="lg:w-4/5 mx-auto flex flex-wrap">
+          
             <img
               alt="ecommerce"
               class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"
