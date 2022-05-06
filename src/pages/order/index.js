@@ -33,6 +33,7 @@ function Index(props) {
             items: cart,
             id_website: 4,
         }))
+        localStorage.removeItem("carts");
     }
     return (
         <div>

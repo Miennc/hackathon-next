@@ -31,7 +31,7 @@ function NavBar(props) {
                     <Link href="/cart">
                         <div className="relative">
                             <i className="fa-solid fa-cart-arrow-down text-3xl cursor-pointer " />
-                            <div className="absolute px-2 rounded-full -top-5  left-5 font-bold bg-orange-500 text-white text-xl">{cart.length}</div>
+                            <div className="absolute px-2 rounded-full -top-5  left-5 font-bold bg-orange-500 text-white text-xl">{cart?.length}</div>
                         </div>
                     </Link>
                 </div>
